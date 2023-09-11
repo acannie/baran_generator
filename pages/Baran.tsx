@@ -53,6 +53,7 @@ const Baran = () => {
     const randomInt = (min: number = 0, max: number): number => {
         return Math.floor(Math.random() * (max - min)) + min;
     }
+
     // ランダムな小数を生成
     const randomDecimal = (min: number = 0, max: number): number => {
         return Math.random() * (max - min) + min;
@@ -94,7 +95,9 @@ const Baran = () => {
         // ぎざぎざの左端
         let nextGizaCycleCount = (gizaCycleCount + 1) % gizaPerMountain
         const gizaLeftPointX = xLeft
-        const gizaLeftPointY = yTop + gizaYCoordinates[gizaCycleCount] + (gizaYCoordinates[nextGizaCycleCount] - gizaYCoordinates[gizaCycleCount]) * (1 - (leftGizaInterceptWidth / gizaWidth))
+        const gizaLeftPointY = yTop
+            + gizaYCoordinates[gizaCycleCount]
+            + (gizaYCoordinates[nextGizaCycleCount] - gizaYCoordinates[gizaCycleCount]) * (1 - (leftGizaInterceptWidth / gizaWidth))
         points.push(new Point(gizaLeftPointX, gizaLeftPointY));
 
         // 周期の更新
@@ -122,13 +125,16 @@ const Baran = () => {
         const previousGizaCycleCount = gizaCycleCount - 1
         const gizaRightPoint = new Point(
             xRight,
-            yTop + gizaYCoordinates[previousGizaCycleCount] + (gizaYCoordinates[gizaCycleCount] - gizaYCoordinates[previousGizaCycleCount]) * (rightGizaInterceptWidth / gizaWidth)
+            yTop
+            + gizaYCoordinates[previousGizaCycleCount]
+            + (gizaYCoordinates[gizaCycleCount] - gizaYCoordinates[previousGizaCycleCount]) * (rightGizaInterceptWidth / gizaWidth)
         )
         points.push(gizaRightPoint)
 
         return [points, lines];
     }
 
+    // HSVをRGBに変換
     const hsvToRgb = (h: number, s: number, v: number): [number, number, number] => {
         let r, g, b;
         let i, f, p, q, t;
@@ -214,7 +220,7 @@ const Baran = () => {
             ctx.lineTo(points[i].x, points[i].y);
         }
         ctx.fill();
-        ctx.closePath();  //moveTo()で指定した始点に向けて線を引き、領域を閉じる
+        ctx.closePath();
 
         // ばらんの線
         ctx.strokeStyle = "rgba(" + [lineColor[0], lineColor[1], lineColor[2], 1] + ")"
@@ -228,26 +234,9 @@ const Baran = () => {
         }
     };
 
-    useEffect(() => {
-        generateImage().then((newImage) => {
-            // setImageUrl(newImage.url); // 画像URLの状態を更新する
-            setLoading(false); // ローディング状態を更新する
-        });
-    }, []);
-
-
-    type Image = {
-        url: string;
-    };
-
-
+    useEffect(() => { }, []);
 
     const handleExportImage = () => {
-        // setLoading(true); // 読込中フラグを立てる
-        // const newImage = await fetchImage();
-        // setImageUrl(newImage.url); // 画像URLの状態を更新する
-        // setLoading(false); // 読込中フラグを倒す
-
         const canvas = document.getElementById('geometryCanvas') as HTMLCanvasElement;
         const image = canvas.toDataURL('image/png');
 
