@@ -251,8 +251,8 @@ const Baran = () => {
     return (
         <div>
             <canvas id="geometryCanvas" width="200" height="200" /><br />
-            <button onClick={handleExportImage}>画像をエクスポート</button>
-            <button onClick={increment}>画像を変形</button>
+            <button onClick={handleExportImage}>ダウンロード</button>
+            <button onClick={increment}>もう一度</button>
             <div>{loading || <img src={imageUrl} />}</div>
         </div>
     );
