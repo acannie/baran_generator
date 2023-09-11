@@ -246,7 +246,7 @@ const Baran = () => {
 
         const link = document.createElement('a');
         link.href = image;
-        link.download = 'geometry_image.png';
+        link.download = 'baran.png';
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
