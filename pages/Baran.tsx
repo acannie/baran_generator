@@ -31,13 +31,83 @@ const Baran = () => {
         await generateImage();
     }
 
-    // 頂点を生成して返す
-    const getPoints = (): Point[] => {
-        const points: Point[] = [
-            new Point(100 + count * 10, 100 + count * 10),
-            new Point(200 + count * 10, 200 + count * 10),
-            new Point(220 + count * 10, 80 + count * 10)
-        ];
+    // ランダムな整数を生成
+    const randomInt = (min: number = 0, max: number): number => {
+        return Math.floor(Math.random() * (max - min)) + min;
+    }
+    // ランダムな小数を生成
+    const randomDecimal = (min: number = 0, max: number): number => {
+        return Math.random() * (max - min) + min;
+    }
+
+    // 頂点を生成
+    const getPoints = (scale: number, imageWidth: number, imageHeight: number): Point[] => {
+        // 定数
+        const gizaWidth = 10 * scale
+        const baranHeight = 160 * scale
+        const gizaYCoordinates = [110, 40, 90, 20, 70, 0, 70, 20, 90, 40].map(x => x * scale);
+
+        // ランダム要素
+        const leftGizaInterceptWidth = randomDecimal(0, gizaWidth)
+        const rightGizaInterceptWidth = randomDecimal(0, gizaWidth)
+        const gizaPointCount = randomInt(2, Math.floor(imageWidth - leftGizaInterceptWidth - rightGizaInterceptWidth - 10) / gizaWidth)
+
+        // ばらん全体のサイズ
+        const baranWidth = leftGizaInterceptWidth + rightGizaInterceptWidth + (gizaPointCount - 1) * gizaWidth
+
+        // ばらんの上下左右端の座標
+        const xLeft = imageWidth / 2 - baranWidth / 2
+        const xRight = imageWidth / 2 + baranWidth / 2
+        const yTop = imageHeight / 2 - baranHeight / 2
+        const yBottom = imageHeight / 2 + baranHeight / 2
+
+        // ばらんの頂点
+        let points: Point[] = []
+        let lines: [Point, Point][] = []
+
+        // ばらんの右下と左下の頂点を追加
+        points.push(new Point(xRight, yBottom))
+        points.push(new Point(xLeft, yBottom))
+
+        // 周期
+        const gizaPerMountain = gizaYCoordinates.length
+        let gizaCycleCount = randomInt(0, gizaPerMountain)
+
+        // ぎざぎざの左端
+        let nextGizaCycleCount = (gizaCycleCount + 1) % gizaPerMountain
+        const gizaLeftPointX = xLeft
+        const gizaLeftPointY = yTop + gizaYCoordinates[gizaCycleCount] + (gizaYCoordinates[nextGizaCycleCount] - gizaYCoordinates[gizaCycleCount]) * (1 - (leftGizaInterceptWidth / gizaWidth))
+        points.push(new Point(gizaLeftPointX, gizaLeftPointY));
+
+        // 周期の更新
+        gizaCycleCount += 1
+        gizaCycleCount %= gizaPerMountain
+
+        // ぎざぎざを作る
+        for (let i = 0; i < gizaPointCount; i++) {
+            // 頂点を追加
+            const point = new Point(
+                xLeft + leftGizaInterceptWidth + gizaWidth * i,
+                yTop + gizaYCoordinates[gizaCycleCount]
+            )
+            points.push(point)
+
+            // 線を描画
+            lines.push([points[points.length - 1], new Point(point.x, yBottom)])
+
+            // 周期の更新
+            gizaCycleCount += 1
+            gizaCycleCount %= gizaPerMountain
+        }
+
+        // ぎざぎざの右端
+        const previousGizaCycleCount = gizaCycleCount - 1
+        const gizaRightPoint = new Point(
+            xRight,
+            yTop + gizaYCoordinates[previousGizaCycleCount] + (gizaYCoordinates[gizaCycleCount] - gizaYCoordinates[previousGizaCycleCount]) * (rightGizaInterceptWidth / gizaWidth)
+        )
+        points.push(gizaRightPoint)
+
         return points;
     }
 
@@ -51,8 +121,21 @@ const Baran = () => {
         // 図形を削除
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        canvas.width = 400
-        canvas.height = 300
+        // 定数
+        const scale = 1
+        const imgWidth = 400 * scale
+        const imgHeight = 300 * scale
+
+        // 色相を決定（アタリならランダムな色、ハズレなら緑）
+        const hit: Boolean = randomInt(0, 10) == 0
+        // const hue: number = randomInt(360) ? hit : 122
+
+        // 塗りつぶしの色と縦線の色
+        // const fillColor = hsv_to_rgb(hue, 53, 68)
+        // const lineColor = hsv_to_rgb(hue, 53, 62)
+
+        canvas.width = imgWidth
+        canvas.height = imgHeight
 
         // 背景色
         ctx.beginPath();
@@ -63,7 +146,7 @@ const Baran = () => {
         ctx.fillStyle = 'blue';
 
         // 頂点を追加
-        const points: Point[] = getPoints();
+        const points: Point[] = getPoints(scale, imgWidth, imgHeight);
 
         // 始点
         ctx.beginPath();
