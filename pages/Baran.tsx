@@ -234,7 +234,11 @@ const Baran = () => {
         }
     };
 
-    useEffect(() => { }, []);
+    useEffect(() => {
+        generateImage().then((newImage) => {
+            setLoading(false);
+        });
+    }, []);
 
     const handleExportImage = () => {
         const canvas = document.getElementById('geometryCanvas') as HTMLCanvasElement;
@@ -242,7 +246,7 @@ const Baran = () => {
 
         const link = document.createElement('a');
         link.href = image;
-        link.download = 'geometry_image.png';
+        link.download = 'baran.png';
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -253,7 +257,6 @@ const Baran = () => {
             <canvas id="geometryCanvas" width="200" height="200" /><br />
             <button onClick={handleExportImage}>ダウンロード</button>
             <button onClick={increment}>もう一度</button>
-            <div>{loading || <img src={imageUrl} />}</div>
         </div>
     );
 };
