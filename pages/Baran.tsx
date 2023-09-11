@@ -196,20 +196,19 @@ const Baran = () => {
         canvas.width = imgWidth
         canvas.height = imgHeight
 
-        // 背景色
-        ctx.beginPath();
+        // 背景
         ctx.fillStyle = "rgba(" + [0, 0, 0, 0] + ")";
+        ctx.beginPath();
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // ばらんの色
-        ctx.beginPath();
-        ctx.fillStyle = "rgba(" + [fillColor[0], fillColor[1], fillColor[2], 1] + ")";
-
-        // ばらんの輪郭
+        // ばらんの形を取得
         const pointsAndLines: [Point[], Line[]] = getPoints(scale, imgWidth, imgHeight)
         const points: Point[] = pointsAndLines[0]
         const lines: Line[] = pointsAndLines[1]
 
+        // ばらんの輪郭
+        ctx.fillStyle = "rgba(" + [fillColor[0], fillColor[1], fillColor[2], 1] + ")";
+        ctx.beginPath();
         ctx.moveTo(points[0].x, points[0].y);
         for (let i = 1; i < points.length; i++) {
             ctx.lineTo(points[i].x, points[i].y);
@@ -218,18 +217,12 @@ const Baran = () => {
         ctx.closePath();  //moveTo()で指定した始点に向けて線を引き、領域を閉じる
 
         // ばらんの線
+        ctx.strokeStyle = "rgba(" + [lineColor[0], lineColor[1], lineColor[2], 1] + ")"
+        ctx.lineWidth = 2 * scale;
         for (let i = 0; i < lines.length; i++) {
             ctx.beginPath();
             ctx.moveTo(lines[i].start.x, lines[i].start.y);
-
-            // 線の終点を指定
             ctx.lineTo(lines[i].end.x, lines[i].end.y);
-
-            // 線のスタイルを指定（色や太さなど）
-            ctx.strokeStyle = "rgba(" + [lineColor[0], lineColor[1], lineColor[2], 1] + ")"
-            ctx.lineWidth = 2 * scale;
-
-            // 線を描く
             ctx.stroke();
             ctx.closePath();
         }
