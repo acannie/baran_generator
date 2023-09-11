@@ -253,7 +253,6 @@ const Baran = () => {
             <canvas id="geometryCanvas" width="200" height="200" /><br />
             <button onClick={handleExportImage}>ダウンロード</button>
             <button onClick={increment}>もう一度</button>
-            <div>{loading || <img src={imageUrl} />}</div>
         </div>
     );
 };
