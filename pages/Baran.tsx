@@ -111,6 +111,47 @@ const Baran = () => {
         return points;
     }
 
+    const hsvToRgb = (h: number, s: number, v: number): [number, number, number] => {
+        let r, g, b;
+        let i, f, p, q, t;
+
+        if (s === 0) {
+            r = g = b = v;
+            return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+        }
+
+        h /= 60;
+        i = Math.floor(h);
+        f = h - i;
+        p = v * (1 - s);
+        q = v * (1 - s * f);
+        t = v * (1 - s * (1 - f));
+
+        switch (i) {
+            case 0:
+                [r, g, b] = [v, t, p];
+                break;
+            case 1:
+                [r, g, b] = [q, v, p];
+                break;
+            case 2:
+                [r, g, b] = [p, v, t];
+                break;
+            case 3:
+                [r, g, b] = [p, q, v];
+                break;
+            case 4:
+                [r, g, b] = [t, p, v];
+                break;
+            default:
+                [r, g, b] = [v, p, q];
+                break;
+        }
+
+        return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+    }
+
+    // 図形を生成
     const generateImage = async () => {
         const canvas = document.getElementById('geometryCanvas') as HTMLCanvasElement;
         const ctx = canvas.getContext('2d');
@@ -128,35 +169,35 @@ const Baran = () => {
 
         // 色相を決定（アタリならランダムな色、ハズレなら緑）
         const hit: Boolean = randomInt(0, 10) == 0
-        // const hue: number = randomInt(360) ? hit : 122
+        const hue: number = hit ? randomInt(0, 360) : 122
 
         // 塗りつぶしの色と縦線の色
-        // const fillColor = hsv_to_rgb(hue, 53, 68)
-        // const lineColor = hsv_to_rgb(hue, 53, 62)
+        const fillColor: [number, number, number] = hsvToRgb(hue, 53, 68)
+        const lineColor: [number, number, number] = hsvToRgb(hue, 53, 62)
 
         canvas.width = imgWidth
         canvas.height = imgHeight
 
         // 背景色
         ctx.beginPath();
-        ctx.fillStyle = "rgba(" + [0, 0, 255, 0.5] + ")";
+        ctx.fillStyle = "rgba(" + [0, 0, 0, 0] + ")";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // 図形を描画する処理を記述する
-        ctx.fillStyle = 'blue';
-
-        // 頂点を追加
-        const points: Point[] = getPoints(scale, imgWidth, imgHeight);
-
-        // 始点
+        // ばらんの色
         ctx.beginPath();
+        ctx.fillStyle = "rgba(" + [fillColor[0], fillColor[1], fillColor[2], 0.5] + ")";
+
+        // ばらんの輪郭
+        const points: Point[] = getPoints(scale, imgWidth, imgHeight);
         ctx.moveTo(points[0].x, points[0].y);
         for (let i = 1; i < points.length; i++) {
             ctx.lineTo(points[i].x, points[i].y);
         }
-
         ctx.closePath();  //moveTo()で指定した始点に向けて線を引き、領域を閉じる
         ctx.fill();
+
+        // ばらんの線
+
     };
 
     useEffect(() => {
