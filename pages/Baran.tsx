@@ -20,6 +20,24 @@ const Baran = () => {
         }
     }
 
+    // 線
+    class Line {
+        private _start: Point;
+        private _end: Point;
+
+        constructor(start: Point, end: Point) {
+            this._start = start
+            this._end = end
+        }
+
+        get start(): Point {
+            return this._start
+        }
+        get end(): Point {
+            return this._end
+        }
+    }
+
     // useStateを使って状態を定義する
     const [imageUrl, setImageUrl] = useState("");
     const [ctx, setCtx] = useState();
@@ -41,7 +59,7 @@ const Baran = () => {
     }
 
     // 頂点を生成
-    const getPoints = (scale: number, imageWidth: number, imageHeight: number): Point[] => {
+    const getPoints = (scale: number, imageWidth: number, imageHeight: number): [Point[], Line[]] => {
         // 定数
         const gizaWidth = 10 * scale
         const baranHeight = 160 * scale
@@ -63,7 +81,7 @@ const Baran = () => {
 
         // ばらんの頂点
         let points: Point[] = []
-        let lines: [Point, Point][] = []
+        let lines: Line[] = []
 
         // ばらんの右下と左下の頂点を追加
         points.push(new Point(xRight, yBottom))
@@ -93,7 +111,7 @@ const Baran = () => {
             points.push(point)
 
             // 線を描画
-            lines.push([points[points.length - 1], new Point(point.x, yBottom)])
+            lines.push(new Line(point, new Point(point.x, yBottom)))
 
             // 周期の更新
             gizaCycleCount += 1
@@ -108,7 +126,7 @@ const Baran = () => {
         )
         points.push(gizaRightPoint)
 
-        return points;
+        return [points, lines];
     }
 
     const hsvToRgb = (h: number, s: number, v: number): [number, number, number] => {
@@ -168,12 +186,12 @@ const Baran = () => {
         const imgHeight = 300 * scale
 
         // 色相を決定（アタリならランダムな色、ハズレなら緑）
-        const hit: Boolean = randomInt(0, 10) == 0
-        const hue: number = hit ? randomInt(0, 360) : 122
+        const differentColor: Boolean = randomInt(0, 10) == 0
+        const hue: number = differentColor ? randomInt(0, 360) : 122
 
         // 塗りつぶしの色と縦線の色
-        const fillColor: [number, number, number] = hsvToRgb(hue, 53, 68)
-        const lineColor: [number, number, number] = hsvToRgb(hue, 53, 62)
+        const fillColor: [number, number, number] = hsvToRgb(hue, 0.53, 0.68)
+        const lineColor: [number, number, number] = hsvToRgb(hue, 0.53, 0.62)
 
         canvas.width = imgWidth
         canvas.height = imgHeight
@@ -185,19 +203,36 @@ const Baran = () => {
 
         // ばらんの色
         ctx.beginPath();
-        ctx.fillStyle = "rgba(" + [fillColor[0], fillColor[1], fillColor[2], 0.5] + ")";
+        ctx.fillStyle = "rgba(" + [fillColor[0], fillColor[1], fillColor[2], 1] + ")";
 
         // ばらんの輪郭
-        const points: Point[] = getPoints(scale, imgWidth, imgHeight);
+        const pointsAndLines: [Point[], Line[]] = getPoints(scale, imgWidth, imgHeight)
+        const points: Point[] = pointsAndLines[0]
+        const lines: Line[] = pointsAndLines[1]
+
         ctx.moveTo(points[0].x, points[0].y);
         for (let i = 1; i < points.length; i++) {
             ctx.lineTo(points[i].x, points[i].y);
         }
-        ctx.closePath();  //moveTo()で指定した始点に向けて線を引き、領域を閉じる
         ctx.fill();
+        ctx.closePath();  //moveTo()で指定した始点に向けて線を引き、領域を閉じる
 
         // ばらんの線
+        for (let i = 0; i < lines.length; i++) {
+            ctx.beginPath();
+            ctx.moveTo(lines[i].start.x, lines[i].start.y);
 
+            // 線の終点を指定
+            ctx.lineTo(lines[i].end.x, lines[i].end.y);
+
+            // 線のスタイルを指定（色や太さなど）
+            ctx.strokeStyle = "rgba(" + [lineColor[0], lineColor[1], lineColor[2], 1] + ")"
+            ctx.lineWidth = 2 * scale;
+
+            // 線を描く
+            ctx.stroke();
+            ctx.closePath();
+        }
     };
 
     useEffect(() => {
