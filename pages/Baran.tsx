@@ -13,6 +13,17 @@ const Baran = () => {
         await generateImage();
     }
 
+    // 頂点を生成して返す
+    const getPoints = (): [number, number][] => {
+        const points: [number, number][] = [];
+
+        points.push([100 + count * 10, 100 + count * 10]);
+        points.push([200 + count * 10, 200 + count * 10]);
+        points.push([220 + count * 10, 80 + count * 10]);
+
+        return points;
+    }
+
     const generateImage = async () => {
         const canvas = document.getElementById('geometryCanvas') as HTMLCanvasElement;
         const ctx = canvas.getContext('2d');
@@ -35,14 +46,10 @@ const Baran = () => {
         ctx.fillStyle = 'blue';
 
         // 頂点を追加
-        const points: [number, number][] = [];
+        const points: [number, number][] = getPoints();
 
-        points.push([100 + count * 10, 100 + count * 10]);
-        points.push([200 + count * 10, 200 + count * 10]);
-        points.push([220 + count * 10, 80 + count * 10]);
-
-        ctx.beginPath();
         // 始点
+        ctx.beginPath();
         ctx.moveTo(points[0][0], points[0][1]);
         for (let i = 1; i < points.length; i++) {
             ctx.lineTo(points[i][0], points[i][1]);
