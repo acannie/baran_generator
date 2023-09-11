@@ -2,6 +2,24 @@ import React, { useEffect, useState } from 'react';
 
 
 const Baran = () => {
+    // 頂点
+    class Point {
+        private _x: number;
+        private _y: number;
+
+        constructor(x: number, y: number) {
+            this._x = x;
+            this._y = y;
+        }
+
+        get x(): number {
+            return this._x;
+        }
+        get y(): number {
+            return this._y;
+        }
+    }
+
     // useStateを使って状態を定義する
     const [imageUrl, setImageUrl] = useState("");
     const [ctx, setCtx] = useState();
@@ -14,13 +32,12 @@ const Baran = () => {
     }
 
     // 頂点を生成して返す
-    const getPoints = (): [number, number][] => {
-        const points: [number, number][] = [];
-
-        points.push([100 + count * 10, 100 + count * 10]);
-        points.push([200 + count * 10, 200 + count * 10]);
-        points.push([220 + count * 10, 80 + count * 10]);
-
+    const getPoints = (): Point[] => {
+        const points: Point[] = [
+            new Point(100 + count * 10, 100 + count * 10),
+            new Point(200 + count * 10, 200 + count * 10),
+            new Point(220 + count * 10, 80 + count * 10)
+        ];
         return points;
     }
 
@@ -46,13 +63,13 @@ const Baran = () => {
         ctx.fillStyle = 'blue';
 
         // 頂点を追加
-        const points: [number, number][] = getPoints();
+        const points: Point[] = getPoints();
 
         // 始点
         ctx.beginPath();
-        ctx.moveTo(points[0][0], points[0][1]);
+        ctx.moveTo(points[0].x, points[0].y);
         for (let i = 1; i < points.length; i++) {
-            ctx.lineTo(points[i][0], points[i][1]);
+            ctx.lineTo(points[i].x, points[i].y);
         }
 
         ctx.closePath();  //moveTo()で指定した始点に向けて線を引き、領域を閉じる
