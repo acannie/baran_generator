@@ -234,7 +234,11 @@ const Baran = () => {
         }
     };
 
-    useEffect(() => { }, []);
+    useEffect(() => {
+        generateImage().then((newImage) => {
+            setLoading(false);
+        });
+    }, []);
 
     const handleExportImage = () => {
         const canvas = document.getElementById('geometryCanvas') as HTMLCanvasElement;
