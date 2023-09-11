@@ -1,14 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+// import { useEffect, useState } from "react";
 
-import Link from 'next/link'
-import ImagePage from './ImagePage';
+// import Link from 'next/link'
+// import ImagePage from './ImagePage';
 import React from 'react'
-import Counter from './counter';
+// import Counter from './counter';
 import Baran from "./Baran";
 import HeadInfo from "./HeadInfo";
-import GenerateCats from "./GenerateCats"
+// import GenerateCats from "./GenerateCats"
 
 
 // `page/index.tsx` is the UI for the `/` URL
