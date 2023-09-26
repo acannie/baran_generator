@@ -1,8 +1,8 @@
-# Workflow for building a Next.js site to GitHub Pages
+# Workflow for building a Next.js site
 #
 # To get started with Next.js see: https://nextjs.org/docs/getting-started
 #
-name: Build Next.js site to Pages
+name: Build Next.js site
 
 on:
   # Runs on pushes targeting all branches except the default branch
