@@ -1,13 +1,16 @@
-# Sample workflow for building and deploying a Next.js site to GitHub Pages
+# Workflow for building a Next.js site to GitHub Pages
 #
 # To get started with Next.js see: https://nextjs.org/docs/getting-started
 #
-name: Deploy Next.js site to Pages
+name: Build Next.js site to Pages
 
 on:
-  # Runs on pushes targeting the default branch
+  # Runs on pushes targeting all branches except the default branch
   push:
-    branches: '*'
+    branches:
+      - '*'
+    branches-ignore:
+      - main
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -81,16 +84,3 @@ jobs:
         uses: actions/upload-pages-artifact@v2
         with:
           path: ./out
-
-  # Deployment job
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    needs: build
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v2
