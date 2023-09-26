@@ -8,7 +8,7 @@ on:
   # Runs on pushes targeting all branches except the default branch
   push:
     branches:
-      - '*'
+      - '**'
     branches-ignore:
       - main
 
