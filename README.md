@@ -1,5 +1,23 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
+## 環境構築
+
+```bash
+sudo apt install nvm npm nodejs
+```
+
+Node.js のバージョン設定
+```bash
+nvm install v18.18.0 # >= v16.14
+nvm use v18.18.0
+node -v # v18.18.0
+```
+
+Next.js のインストール
+```bash
+npm install next@latest react@latest react-dom@latest
+```
+
 ## Getting Started
 
 First, run the development server:
