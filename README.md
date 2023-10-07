@@ -1,5 +1,7 @@
 ## ばらんジェネレーターについて
 
+https://acannie.github.io/baran_generator/
+
 ランダムな幅・切り口のばらんを生成するツールです。
 たまに色違いが現れます。
 
