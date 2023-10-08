@@ -39,15 +39,8 @@ const Baran = () => {
     }
 
     // useStateを使って状態を定義する
-    const [imageUrl, setImageUrl] = useState("");
-    const [ctx, setCtx] = useState();
+    const [imageDataUrl, setImageDataUrl] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
-    const [count, setCount] = useState(0);
-
-    const increment = async () => {
-        setCount(count + 1);
-        await generateImage();
-    }
 
     // ランダムな整数を生成
     const randomInt = (min: number = 0, max: number): number => {
@@ -179,8 +172,6 @@ const Baran = () => {
     const generateImage = async () => {
         const canvas = document.getElementById('geometryCanvas') as HTMLCanvasElement;
         const ctx = canvas.getContext('2d');
-
-        // nullチェック
         if (!ctx) { return }
 
         // 図形を削除
@@ -232,6 +223,9 @@ const Baran = () => {
             ctx.stroke();
             ctx.closePath();
         }
+
+        // 画像の表示を更新
+        setImageDataUrl(canvas.toDataURL());
     };
 
     useEffect(() => {
@@ -254,9 +248,10 @@ const Baran = () => {
 
     return (
         <div>
-            <canvas id="geometryCanvas" width="200" height="200" /><br />
+            <canvas id="geometryCanvas" width="200" height="200" style={{display: "none"}}/><br />
+            {imageDataUrl && <img alt="icon" src={imageDataUrl} />}<br />
             <button onClick={handleExportImage}>ダウンロード</button>
-            <button onClick={increment}>もう一度</button>
+            <button onClick={generateImage}>もう一度</button>
         </div>
     );
 };
