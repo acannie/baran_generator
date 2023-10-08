@@ -39,7 +39,7 @@ const Baran = () => {
     }
 
     // useStateを使って状態を定義する
-    const [imageUrl, setImageUrl] = useState("");
+    const [imageUrl, setImageUrl] = useState<string | null>(null);
     const [ctx, setCtx] = useState();
     const [loading, setLoading] = useState(true);
     const [count, setCount] = useState(0);
@@ -232,6 +232,8 @@ const Baran = () => {
             ctx.stroke();
             ctx.closePath();
         }
+
+        setImageUrl(canvas.toDataURL());
     };
 
     useEffect(() => {
@@ -255,6 +257,7 @@ const Baran = () => {
     return (
         <div>
             <canvas id="geometryCanvas" width="200" height="200" /><br />
+            {imageUrl && <img alt="icon" src={imageUrl} />}<br />
             <button onClick={handleExportImage}>ダウンロード</button>
             <button onClick={increment}>もう一度</button>
         </div>
